@@ -69,7 +69,7 @@ cd ..
 # running application in dev mode
 #
 echo -e "\nRUNNING THE APPLICATION"
-DEV=1 ./run.sh > testrun.log 2>&1 &
+DEV=1 timeout 10 ./run.sh > testrun.log 2>&1 &
 
 
 
@@ -146,7 +146,6 @@ do_curl "GET"    "http://localhost:5000/api/events" "application/json" "200"
 #
 # finalize
 #
-kill %1
 deactivate
 echo -e "\n\n$ERRORS ERRORS FOUND!"
 exit $ERRORS
