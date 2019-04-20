@@ -91,7 +91,7 @@ do_curl "POST"   "http://localhost:5000/api/service"  "application/json" "201" '
 do_curl "POST"   "http://localhost:5000/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
 do_curl "POST"   "http://localhost:5000/api/motd"     "application/json" "201" '{ "message": "services are ok" }'
 do_curl "GET"    "http://localhost:5000/api/services" "application/json" "200"
-do_curl "GET"    "http://localhost:5000/api/events" "application/json" "200"
+do_curl "GET"    "http://localhost:5000/api/events"   "application/json" "200"
 
 sleep 1
 do_curl "DELETE" "http://localhost:5000/api/motd"     "application/json" "200" '1'
@@ -101,7 +101,7 @@ do_curl "POST"   "http://localhost:5000/api/motd"     "application/json" "201" '
 do_curl "POST"   "http://localhost:5000/api/event"    "application/json" "201" '{ "title": "change scheduled", "description": "A change has been scheduled." }'
 do_curl "GET"    "http://localhost:5000/api/motd"     "application/json" "200"
 do_curl "GET"    "http://localhost:5000/api/services" "application/json" "200"
-do_curl "GET"    "http://localhost:5000/api/events" "application/json" "200"
+do_curl "GET"    "http://localhost:5000/api/events"   "application/json" "200"
 
 sleep 1
 do_curl "POST"   "http://localhost:5000/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
@@ -110,7 +110,7 @@ do_curl "POST"   "http://localhost:5000/api/service"  "application/json" "201" '
 do_curl "POST"   "http://localhost:5000/api/motd"     "application/json" "201" '{ "message": "services are still ok" }'
 do_curl "GET"    "http://localhost:5000/api/motd"     "application/json" "200"
 do_curl "GET"    "http://localhost:5000/api/services" "application/json" "200"
-do_curl "GET"    "http://localhost:5000/api/events" "application/json" "200"
+do_curl "GET"    "http://localhost:5000/api/events"   "application/json" "200"
 
 sleep 1
 do_curl "POST"   "http://localhost:5000/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
@@ -119,7 +119,7 @@ do_curl "POST"   "http://localhost:5000/api/service"  "application/json" "201" '
 do_curl "POST"   "http://localhost:5000/api/motd"     "application/json" "201" '{ "message": "services2 is broken" }'
 do_curl "GET"    "http://localhost:5000/api/motd"     "application/json" "200"
 do_curl "GET"    "http://localhost:5000/api/services" "application/json" "200"
-do_curl "GET"    "http://localhost:5000/api/events" "application/json" "200"
+do_curl "GET"    "http://localhost:5000/api/events"   "application/json" "200"
 
 sleep 1
 do_curl "POST"   "http://localhost:5000/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
@@ -128,7 +128,7 @@ do_curl "POST"   "http://localhost:5000/api/service"  "application/json" "201" '
 do_curl "POST"   "http://localhost:5000/api/motd"     "application/json" "201" '{ "message": "services2 is broken" }'
 do_curl "GET"    "http://localhost:5000/api/motd"     "application/json" "200"
 do_curl "GET"    "http://localhost:5000/api/services" "application/json" "200"
-do_curl "GET"    "http://localhost:5000/api/events" "application/json" "200"
+do_curl "GET"    "http://localhost:5000/api/events"   "application/json" "200"
 
 sleep 1
 do_curl "POST"   "http://localhost:5000/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
@@ -138,8 +138,88 @@ do_curl "POST"   "http://localhost:5000/api/event"    "application/json" "201" '
 do_curl "POST"   "http://localhost:5000/api/motd"     "application/json" "201" '{ "message": "services are ok again" }'
 do_curl "GET"    "http://localhost:5000/api/motd"     "application/json" "200"
 do_curl "GET"    "http://localhost:5000/api/services" "application/json" "200"
-do_curl "GET"    "http://localhost:5000/api/events" "application/json" "200"
+do_curl "GET"    "http://localhost:5000/api/events"   "application/json" "200"
 
+sleep 1
+do_curl "GET"    "http://localhost:5000/api/export"   "application/json" "200" '1'
+do_curl "POST"    "http://localhost:5000/api/import"  "application/json" "201" '{
+  "events": [
+    {
+      "description": "A change has been scheduled.", 
+      "title": "change scheduled", 
+      "updated": "2019-04-20 18:27:21 CEST"
+    }, 
+    {
+      "description": "After the change service2 was broken. Now it is repaired again.", 
+      "title": "service2 had an outage", 
+      "updated": "2019-04-20 18:27:25 CEST"
+    }
+  ], 
+  "motd": {
+    "message": "services are ok again", 
+    "updated": "2019-04-20 18:27:25 CEST"
+  }, 
+  "services": [
+    {
+      "name": "service0", 
+      "score": 100, 
+      "updated": "2019-04-20 18:27:25 CEST"
+    }, 
+    {
+      "name": "service1", 
+      "score": 100, 
+      "updated": "2019-04-20 18:27:25 CEST"
+    }, 
+    {
+      "name": "service2", 
+      "score": 100, 
+      "updated": "2019-04-20 18:27:25 CEST"
+    }
+  ]
+}'
+do_curl "POST"    "http://localhost:5000/api/import"  "application/json" "201" '{
+  "events": [
+  ], 
+  "motd": {
+  }, 
+  "services": [
+  ]
+}'
+do_curl "POST"    "http://localhost:5000/api/import"  "application/json" "201" '{
+  "events": [
+    {
+      "description": "A change has been scheduled.", 
+      "title": "change scheduled", 
+      "updated": "2019-04-20 18:27:21 CEST"
+    }, 
+    {
+      "description": "After the change service2 was broken. Now it is repaired again.", 
+      "title": "service2 had an outage", 
+      "updated": "2019-04-20 18:27:25 CEST"
+    }
+  ], 
+  "motd": {
+    "message": "services are ok again", 
+    "updated": "2019-04-20 18:27:25 CEST"
+  }, 
+  "services": [
+    {
+      "name": "service0", 
+      "score": 100, 
+      "updated": "2019-04-20 18:27:25 CEST"
+    }, 
+    {
+      "name": "service1", 
+      "score": 100, 
+      "updated": "2019-04-20 18:27:25 CEST"
+    }, 
+    {
+      "name": "service2", 
+      "score": 100, 
+      "updated": "2019-04-20 18:27:25 CEST"
+    }
+  ]
+}'
 
 
 
