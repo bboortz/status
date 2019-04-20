@@ -13,6 +13,7 @@
 	* CRUD status of services
 	* CRUD events
 	* import / export motd, status and events
+* protected REST API with API key
 * Testcases for every REST call
 * configurable using an environment variable
 
@@ -55,7 +56,6 @@ DEV=1 ./run.sh
 
 # planned features
 
-* protected REST API with API key
 * packaged with docker container
 * RSS feed
 * desktop notification
