@@ -31,28 +31,24 @@ pip install -U -r requirements.txt
 ## How to run for development?
 
 ```
-export STATUS_CONFIG='{ "team": "Authentication Delivery Center", "refresh_interval": 15, "api_key": "1111111", "links": { "team": "https://adc" } }'
-export FLASK_ENV=development
-export FLASK_DEBUG=1
-flask run
+export STATUS_CONFIG='{ "team": "Nice Team", "refresh_interval": 15, "api_key": "1111111", "links": { "team": "https://team" } }'
+DEV=1 ./run.sh
 ```
 
 
 ## How to run for production?
 
 ```
-export STATUS_CONFIG='{ "team": "Authentication Delivery Center", "refresh_interval": 15, "api_key": "1111111", "links": { "team": "https://adc" } }'
-export FLASK_ENV=production
-flask run
+export STATUS_CONFIG='{ "team": "Nice Team", "refresh_interval": 15, "api_key": "1111111", "links": { "team": "https://team" } }'
+./run.sh
 ```
 
 
 ## How to unit test the software?
 
 ```
-export STATUS_CONFIG='{ "team": "Authentication Delivery Center", "refresh_interval": 15, "api_key": "1111111", "links": { "team": "https://adc" } }'
-export FLASK_ENV=production
-flask run
+export STATUS_CONFIG='{ "team": "Nice Team", "refresh_interval": 15, "api_key": "1111111", "links": { "team": "https://team" } }'
+DEV=1 ./run.sh
 ```
 
 
