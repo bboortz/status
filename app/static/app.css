@@ -1,0 +1,10 @@
+div.status {
+  width: 330px;
+  margin: 20px;
+  border: 1px solid gray;
+  padding-top: 30px;
+  padding-right: 30px;
+  padding-bottom: 30px;
+  padding-left: 50px;
+}
+

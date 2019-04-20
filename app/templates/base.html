@@ -1,0 +1,63 @@
+{% extends 'bootstrap/base.html' %}
+
+
+
+<!-- HEAD BLOCK -->
+{% block head %}
+	{{super()}}
+	{% block favicon %}
+		<link rel="shortcut icon" href="{{ url_for('static', filename=status_ico) }}">
+	{% endblock %}
+	<meta http-equiv="refresh" content="{{ config['refresh_interval'] }}" >
+{% endblock %}
+
+
+
+<!-- STYLE BLOCK -->
+{% block styles %}
+	{{super()}}
+	<link rel="stylesheet" href="{{url_for('.static', filename='app.css')}}">
+{% endblock %}
+
+
+
+<!-- TITLE BLOCK -->
+{% block title %}
+    {{ config['team'] }} Statusboard - {{ status }}
+{% endblock %}
+
+
+
+<!-- NAVBAR BLOCK -->
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <h3>
+			&nbsp;&nbsp; 
+			<a href="#">
+				<img src="{{ url_for('static', filename='logo.png') }}" alt="Statusboard" style="width:40px;">
+			</a>
+			| <a href="/api/motd">Motd</a> 
+			| <a href="/api/services">Services</a> 
+			| <a href="/api/events">Events</a>
+		</h3>
+    </nav>
+{% endblock %}
+
+
+
+<!-- CONTENT BLOCK -->
+{% block content %}
+	{{super()}}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {# application content needs to be provided in the app_content block #}
+        {% block app_content %}{% endblock %}
+    </div>
+{%- endblock content %}

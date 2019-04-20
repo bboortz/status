@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+	{% if motd.message is defined %}
+		<!-- MOTD DIV -->
+		<div class="container">
+			<div class="alert alert-info">
+				<h2>{{ motd.message }}</h2>
+			</div>
+		</div>
+	{% endif %}
+
+
+	<!-- STATUS DIV -->
+	<div class="container">
+
+		<div class="statusgrid">
+			{% for s in services %}
+				{% set status = "CRITICAL" %}
+				{% set color = "red" %}
+				{% set icon = "fa-times" %}
+				{% if s.score == 100 %}
+					{% set status = "OK" %}
+					{% set color = "rgb(0, 193, 118)" %}
+					{% set icon = "fa-check-circle" %}
+				{% elif s.score < 100  and  s.score >= 80 %}
+					{% set status = "WARNING" %}
+					{% set color = "yellow" %}
+				{% endif %}
+				<div class="status col-sm-3" style="background-color:{{ color }};">
+					<h3>
+						{{ s.name }}
+					</h3>
+					<h5>
+						<span class="fa-stack fa-lg">
+							<i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+							<i class="fa {{ icon }} fa-stack-1x"></i>
+						</span>
+						{{ status }}
+					</h5>
+					<p><small>last update: {{ s.updated }}</small></p>
+				</div>
+			{% endfor %}
+		</div>
+
+	</div>
+
+
+	{% if events|length >= 1 %}
+	<!-- EVENT DIV -->
+	<div class="container">
+
+		<h2>Events</h2>
+		<div class="eventgrid">
+			{% for e in events %}
+				<div class="alert alert-info">
+					<h3>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+						<i class="fa fa-info fa-stack-1x"></i>
+					</span>
+					{{ e.title }}</h3>
+					<p>{{ e.description }}</p>
+					<p><small>last update: {{ e.updated }}</small></p>
+				</div>
+			{% endfor %}
+		</div>
+		
+	</div>
+	{% endif %}
+
+
+	{% include 'footer.html' %}
+{%- endblock content %}
