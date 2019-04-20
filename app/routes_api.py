@@ -69,6 +69,7 @@ def create_update_motd():
 #   "deleted": true
 # }
 @app.route('/api/motd', methods=['DELETE'])
+@login_required
 def delete_motd():
 	result = repo.deleteMotd()
 	return jsonify(result)
@@ -109,6 +110,7 @@ def get_services():
 #   "updated": "2019-04-19 19:55:04 CEST"
 # }
 @app.route('/api/service', methods=['POST', 'PUT'])
+@login_required
 def create_update_service():
 	# check input
 	if not request.json or not 'name' in request.json or not 'score' in request.json:
@@ -133,6 +135,7 @@ def create_update_service():
 #   "deleted": true
 # }
 @app.route('/api/service/<string:name>', methods=['DELETE'])
+@login_required
 def delete_service(name):
 	result = repo.deleteService(name)
 
@@ -177,6 +180,7 @@ def get_events():
 #  "updated": "2019-04-19 20:31:52 CEST"
 # }
 @app.route('/api/event', methods=['POST', 'PUT'])
+@login_required
 def post_event():
 	# check input
 	if not request.json or not 'title' in request.json or not 'description' in request.json:
@@ -201,6 +205,7 @@ def post_event():
 #   "deleted": true
 # }
 @app.route('/api/event/<string:title>', methods=['DELETE'])
+@login_required
 def delete_event(title):
 	result = repo.deleteEvent(title)
 
@@ -230,6 +235,7 @@ def delete_event(title):
 # }
 # OUTPUT: ?
 @app.route('/api/import', methods=['POST', 'PUT'])
+@login_required
 def post_import():
 	# check input
 	if not request.json:
@@ -311,6 +317,7 @@ def post_import():
 #     ] },
 # }
 @app.route('/api/export', methods=['GET'])
+@login_required
 def get_export():
 	result = {
 		"motd": repo.motd,

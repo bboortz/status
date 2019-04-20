@@ -179,7 +179,8 @@ def test_get_motd1(client):
 def test_delete_motd(client):
 	"""Testing the API"""
 
-	rv = client.delete('/api/motd', content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.delete('/api/motd', content_type='application/json', headers=headers)
 	assert "200 OK" == rv.status
 	result_dict = json.loads(rv.data)
 	assert True == result_dict['deleted']
@@ -190,7 +191,8 @@ def test_delete_motd(client):
 def test_delete_motd_negative(client):
 	"""Testing the API"""
 
-	rv = client.delete('/api/motd/1', content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.delete('/api/motd/1', content_type='application/json', headers=headers)
 	assert "404 NOT FOUND" == rv.status
 
 
@@ -211,7 +213,8 @@ def test_get_motd2(client):
 def test_create_or_update_service(client, service_request_dict_positive):
 	"""Testing the API"""
 
-	rv = client.post('/api/service', data=json.dumps(service_request_dict_positive), content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.post('/api/service', data=json.dumps(service_request_dict_positive), content_type='application/json', headers=headers)
 	assert "201 CREATED" == rv.status
 	result_dict = json.loads(rv.data)
 	assert 'name' in result_dict
@@ -224,10 +227,12 @@ def test_create_or_update_service(client, service_request_dict_positive):
 def test_create_or_update_service_negative(client, service_request_dict_negative):
 	"""Testing the API"""
 
-	rv = client.post('/api/service', content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.post('/api/service', content_type='application/json', headers=headers)
 	assert "400 BAD REQUEST" == rv.status
 
-	rv = client.post('/api/service', data=json.dumps(service_request_dict_negative), content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.post('/api/service', data=json.dumps(service_request_dict_negative), content_type='application/json', headers=headers)
 	assert "400 BAD REQUEST" == rv.status
 
 
@@ -255,7 +260,8 @@ def test_get_services1(client):
 def test_delete_service(client):
 	"""Testing the API"""
 
-	rv = client.delete('/api/service/service2', content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.delete('/api/service/service2', content_type='application/json', headers=headers)
 	assert "200 OK" == rv.status
 	result_dict = json.loads(rv.data)
 	assert True == result_dict['deleted']
@@ -266,7 +272,8 @@ def test_delete_service(client):
 def test_delete_service_negative(client):
 	"""Testing the API"""
 
-	rv = client.delete('/api/service/5', content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.delete('/api/service/5', content_type='application/json', headers=headers)
 	assert "404 NOT FOUND" == rv.status
 
 
@@ -294,8 +301,8 @@ def test_get_service2(client):
 def test_create_or_update_event(client, event_request_dict_positive):
 	"""Testing the API"""
 
-	print(event_request_dict_positive)
-	rv = client.post('/api/event', data=json.dumps(event_request_dict_positive), content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.post('/api/event', data=json.dumps(event_request_dict_positive), content_type='application/json', headers=headers)
 	assert "201 CREATED" == rv.status
 	result_dict = json.loads(rv.data)
 	assert 'title' in result_dict
@@ -308,10 +315,12 @@ def test_create_or_update_event(client, event_request_dict_positive):
 def test_create_or_event_service_negative(client,event_request_dict_negative):
 	"""Testing the API"""
 
-	rv = client.post('/api/event', content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.post('/api/event', content_type='application/json', headers=headers)
 	assert "400 BAD REQUEST" == rv.status
 
-	rv = client.post('/api/service', data=json.dumps(event_request_dict_negative), content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.post('/api/service', data=json.dumps(event_request_dict_negative), content_type='application/json', headers=headers)
 	assert "400 BAD REQUEST" == rv.status
 
 
@@ -339,7 +348,8 @@ def test_get_events1(client):
 def test_delete_event(client):
 	"""Testing the API"""
 
-	rv = client.delete('/api/event/event2', content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.delete('/api/event/event2', content_type='application/json', headers=headers)
 	assert "200 OK" == rv.status
 	result_dict = json.loads(rv.data)
 	assert True == result_dict['deleted']
@@ -350,7 +360,8 @@ def test_delete_event(client):
 def test_delete_event_negative(client):
 	"""Testing the API"""
 
-	rv = client.delete('/api/event/5', content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.delete('/api/event/5', content_type='application/json', headers=headers)
 	assert "404 NOT FOUND" == rv.status
 
 
@@ -378,7 +389,8 @@ def test_get_events2(client):
 def test_import(client, import_request_dict_positive):
 	"""Testing the API"""
 
-	rv = client.post('/api/import', data=json.dumps(import_request_dict_positive), content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.post('/api/import', data=json.dumps(import_request_dict_positive), content_type='application/json', headers=headers)
 	assert "201 CREATED" == rv.status
 	result_dict = json.loads(rv.data)
 	if 'motd' in import_request_dict_positive:
@@ -396,10 +408,12 @@ def test_import(client, import_request_dict_positive):
 def test_import_negative(client, import_request_dict_negative):
 	"""Testing the API"""
 
-	rv = client.post('/api/import', content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.post('/api/import', content_type='application/json', headers=headers)
 	assert "400 BAD REQUEST" == rv.status
 
-	rv = client.post('/api/import', data=json.dumps(import_request_dict_negative), content_type='application/json')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.post('/api/import', data=json.dumps(import_request_dict_negative), content_type='application/json', headers=headers)
 	assert "400 BAD REQUEST" == rv.status
 
 
@@ -409,7 +423,8 @@ def test_import_negative(client, import_request_dict_negative):
 def test_export(client):
 	"""Testing the API"""
 
-	rv = client.get('/api/export')
+	headers = { 'X-API-KEY': x_api_key }
+	rv = client.get('/api/export', headers=headers)
 	assert "200 OK" == rv.status
 	result_dict = json.loads(rv.data)
 	assert 'motd' in result_dict
