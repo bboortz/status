@@ -25,7 +25,7 @@
 ## install the needed software
 
 ```
-pip install -U -r requirements.txt
+./install.sh
 ```
 
 

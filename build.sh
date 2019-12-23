@@ -4,12 +4,6 @@
 HOST=0.0.0.0
 PORT=5000
 
-export FLASK_APP=status.py
-
-source .venv/bin/activate
-
-
-
 if [ -n "${DEV:-}" ] ; then
 	export FLASK_ENV=development
 	export FLASK_DEBUG=1
