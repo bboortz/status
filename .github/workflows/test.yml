@@ -26,6 +26,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
-    - name: Test with pytest
+    - name: Test with test script 
       run: |
         ./test.sh
