@@ -46,7 +46,7 @@ jobs:
         # Set up docker to authenticate
         # via gcloud command-line tool.
         gcloud auth configure-docker
-      
+
     # Build the Docker image
     - name: Build
       run: |        
@@ -58,7 +58,7 @@ jobs:
     - name: Publish
       run: |
         docker push gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA
-        
+
     # Set up kustomize
     - name: Set up Kustomize
       run: |
