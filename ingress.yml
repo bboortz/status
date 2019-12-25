@@ -9,7 +9,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: /*
         backend:
           serviceName: status-service
           servicePort: 60000
