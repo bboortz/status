@@ -6,7 +6,8 @@ USER runuser
 WORKDIR /home/runuser
 
 COPY requirements.txt requirements.txt
-COPY app status.py ./
+COPY status.py ./
+COPY app ./app
 COPY install.sh run.sh test.sh ./
 
 USER root
