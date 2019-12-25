@@ -30,8 +30,15 @@ do_curl() {
 
 	local http_code
 	if [ -z "${data}" ]; then
-		echo -e "\nCURL: ${curl_cmd}" -H "Content-Type: ${content_type}"
-		http_code=$( ${curl_cmd} -H "Content-Type: ${content_type}" )
+		if [ "${option}" == "POST" ]; then
+			set -x
+			http_code=$( ${curl_cmd} -H "Content-Type: ${content_type}" -H "Content-Length: 0")
+			set +x
+		else
+			set -x
+			http_code=$( ${curl_cmd} -H "Content-Type: ${content_type}" )
+			set +x
+		fi
 	else
 		echo -e "\nCURL: ${curl_cmd}" -H "Content-Type: ${content_type} -d ${data}"
 		http_code=$( ${curl_cmd} -H "Content-Type: ${content_type}" -d "${data}" -H "X-API_KEY: ${API_KEY}" )
