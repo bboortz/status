@@ -6,7 +6,9 @@ PORT=5000
 
 export FLASK_APP=status.py
 
-source .venv/bin/activate
+if [ ! -f /.dockerenv ]; then
+	source .venv/bin/activate
+fi
 
 
 
