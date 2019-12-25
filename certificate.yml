@@ -1,0 +1,7 @@
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: status-certificate
+spec:
+  domains:
+    - status-test-01.example.com
