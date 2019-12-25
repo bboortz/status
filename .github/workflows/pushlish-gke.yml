@@ -75,12 +75,8 @@ jobs:
         kubectl get services -o wide
         kubectl get pods -o wide
 
-
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-
+	# Test the deployment
+	- uses: actions/checkout@v1
     - name: Test with test script
       run: |
         ./test.sh ${{ secrets.GKE_EMAIL }}
