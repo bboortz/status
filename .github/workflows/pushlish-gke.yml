@@ -72,6 +72,7 @@ jobs:
         ./kustomize edit set image gcr.io/$GKE_PROJECT/$IMAGE:${GITHUB_SHA}
         ./kustomize build . | kubectl apply -f -
         kubectl rollout status deployment/status-deployment
+        kubectl get ingress
         kubectl get services -o wide
         kubectl get pods -o wide
 
