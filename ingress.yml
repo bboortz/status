@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: status-ingress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: status-ip-address
+    # kubernetes.io/ingress.global-static-ip-name: status-ip-address
     networking.gke.io/managed-certificates: status-certificate
 spec:
   backend:
