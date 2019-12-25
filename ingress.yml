@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: status-ingress
+spec:
+  backend:
+    serviceName: status-deployment
+    servicePort: 60000
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: status-deployment
+          servicePort: 60000
