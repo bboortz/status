@@ -4,12 +4,12 @@ metadata:
   name: status-ingress
 spec:
   backend:
-    serviceName: status-deployment
+    serviceName: status-service
     servicePort: 60000
   rules:
   - http:
       paths:
       - path: /
         backend:
-          serviceName: status-deployment
+          serviceName: status-service
           servicePort: 60000
