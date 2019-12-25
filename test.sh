@@ -40,8 +40,9 @@ do_curl() {
 			set +x
 		fi
 	else
-		echo -e "\nCURL: ${curl_cmd}" -H "Content-Type: ${content_type} -d ${data}"
+		set -x
 		http_code=$( ${curl_cmd} -H "Content-Type: ${content_type}" -d "${data}" -H "X-API_KEY: ${API_KEY}" )
+		set +x
 	fi
 	echo "  http_code: ${http_code}"
 	if [ "${http_code}" != "${expected_code}" ]; then
