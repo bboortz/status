@@ -16,10 +16,12 @@ ERRORS=0
 # method
 #
 do_curl() {
-	local option="$1"
-	local url="$2"
-	local content_type="${3}"
-	local expected_code="${4}"
+	local with_api_key="${1}"
+	local option="${2}"
+	local url="${3}"
+	local content_type="${4}"
+	local expected_code="${5}"
+	shift
 	shift
 	shift
 	shift
@@ -29,12 +31,20 @@ do_curl() {
 	curl_cmd="$CURL -X ${option} ${url}"
 
 	local http_code
-	if [ -z "${data}" ]; then
-		echo -e "\nCURL: ${curl_cmd}" -H "Content-Type: ${content_type}"
-		http_code=$( ${curl_cmd} -H "Content-Type: ${content_type}" )
-	else
-		echo -e "\nCURL: ${curl_cmd}" -H "Content-Type: ${content_type} -d ${data}"
+	if [ "${with_api_key}" == "1" ]; then
+		set -x
 		http_code=$( ${curl_cmd} -H "Content-Type: ${content_type}" -d "${data}" -H "X-API_KEY: ${API_KEY}" )
+		set +x
+	else
+		if [ "${option}" == "POST" ]; then
+			set -x
+			http_code=$( ${curl_cmd} -H "Content-Type: ${content_type}" -H "Content-Length: 0")
+			set +x
+		else
+			set -x
+			http_code=$( ${curl_cmd} -H "Content-Type: ${content_type}" )
+			set +x
+		fi
 	fi
 	echo "  http_code: ${http_code}"
 	if [ "${http_code}" != "${expected_code}" ]; then
@@ -80,71 +90,71 @@ fi
 #
 echo -e "\nSIMULATING TESTS"
 sleep 1
-do_curl "GET"    "http://${HOST}:${PORT}"              "text/html"        "200"
-do_curl "GET"    "http://${HOST}:${PORT}/"             "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
-do_curl "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "403"
-do_curl "DELETE" "http://${HOST}:${PORT}/api/motd"     "application/json" "200" '1'
+do_curl "0" "GET"    "http://${HOST}:${PORT}"              "text/html"        "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/"             "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
+do_curl "0" "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "403"
+do_curl "1" "DELETE" "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
 
 sleep 1
-do_curl "POST"   "http://${HOST}:${PORT}/api/services" "application/json" "405"
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "403"
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services are ok" }'
-do_curl "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
+do_curl "0" "POST"   "http://${HOST}:${PORT}/api/services" "application/json" "405"
+do_curl "0" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "403"
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services are ok" }'
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
 
 sleep 1
-do_curl "DELETE" "http://${HOST}:${PORT}/api/motd"     "application/json" "200" '1'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services are still ok" }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/event"    "application/json" "201" '{ "title": "change scheduled", "description": "A change has been scheduled." }'
-do_curl "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
+do_curl "1" "DELETE" "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services are still ok" }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/event"    "application/json" "201" '{ "title": "change scheduled", "description": "A change has been scheduled." }'
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
 
 sleep 1
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service2", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services are still ok" }'
-do_curl "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service2", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services are still ok" }'
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
 
 sleep 1
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service2", "score": 50 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services2 is broken" }'
-do_curl "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service2", "score": 50 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services2 is broken" }'
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
 
 sleep 1
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service2", "score": 50 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services2 is broken" }'
-do_curl "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service2", "score": 50 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services2 is broken" }'
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
 
 sleep 1
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service2", "score": 100 }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/event"    "application/json" "201" '{ "title": "service2 had an outage", "description": "After the change service2 was broken. Now it is repaired again." }'
-do_curl "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services are ok again" }'
-do_curl "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
-do_curl "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service0", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service1", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/service"  "application/json" "201" '{ "name": "service2", "score": 100 }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/event"    "application/json" "201" '{ "title": "service2 had an outage", "description": "After the change service2 was broken. Now it is repaired again." }'
+do_curl "1" "POST"   "http://${HOST}:${PORT}/api/motd"     "application/json" "201" '{ "message": "services are ok again" }'
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/motd"     "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/services" "application/json" "200"
+do_curl "0" "GET"    "http://${HOST}:${PORT}/api/events"   "application/json" "200"
 
 sleep 1
-do_curl "GET"    "http://${HOST}:${PORT}/api/export"   "application/json" "200" '1'
-do_curl "POST"    "http://${HOST}:${PORT}/api/import"  "application/json" "201" '{
+do_curl "1" "GET"    "http://${HOST}:${PORT}/api/export"   "application/json" "200"
+do_curl "1" "POST"    "http://${HOST}:${PORT}/api/import"  "application/json" "201" '{
   "events": [
     {
       "description": "A change has been scheduled.", 
@@ -179,7 +189,7 @@ do_curl "POST"    "http://${HOST}:${PORT}/api/import"  "application/json" "201" 
     }
   ]
 }'
-do_curl "POST"    "http://${HOST}:${PORT}/api/import"  "application/json" "201" '{
+do_curl "1" "POST"    "http://${HOST}:${PORT}/api/import"  "application/json" "201" '{
   "events": [
   ], 
   "motd": {
@@ -187,7 +197,7 @@ do_curl "POST"    "http://${HOST}:${PORT}/api/import"  "application/json" "201" 
   "services": [
   ]
 }'
-do_curl "POST"    "http://${HOST}:${PORT}/api/import"  "application/json" "201" '{
+do_curl "1" "POST"    "http://${HOST}:${PORT}/api/import"  "application/json" "201" '{
   "events": [
     {
       "description": "A change has been scheduled.", 

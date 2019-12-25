@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: status-service
 spec:
-  type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 5000
+  type: NodePort
   selector:
     app: status-deployment
+  ports:
+  - protocol: TCP
+    port: 60000
+    targetPort: 5000
