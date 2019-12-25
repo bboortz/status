@@ -79,4 +79,4 @@ jobs:
     - uses: actions/checkout@v1
     - name: Test with test script
       run: |
-        ./test.sh ${{ secrets.GKE_EMAIL }}
+        ./test.sh ${{ secrets.GKE_HOST }} ${{ secrets.GKE_PORT }}
