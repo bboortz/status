@@ -13,5 +13,8 @@ USER root
 RUN ./install.sh
 USER runuser
 
+RUN ls -la
+RUN ls -la ./app
+
 EXPOSE 5000
 ENTRYPOINT ["./run.sh"]
