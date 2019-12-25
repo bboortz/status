@@ -10,7 +10,7 @@ COPY app status.py ./
 COPY install.sh run.sh test.sh ./
 
 USER root
-RUN /home/runuser/install.sh
+RUN ./install.sh
 USER runuser
 
 EXPOSE 5000
